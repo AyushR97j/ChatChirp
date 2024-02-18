@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const io = require('socket.io')(8080, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: '*',
     }
 });
 
@@ -210,6 +210,7 @@ app.get('/api/message/:conversationId', async (req, res) => {
     }
 })
 
+//Fetches all users except the current user
 app.get('/api/users/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -217,6 +218,21 @@ app.get('/api/users/:userId', async (req, res) => {
         const usersData = Promise.all(users.map(async (user) => {
             return { user: { email: user.email, fullName: user.fullName, receiverId: user._id } }
         }))
+        res.status(200).json(await usersData);
+    } catch (error) {
+        console.log('Error', error)
+    }
+})
+
+//Fetch user from its name
+app.get('/api/user/:searchedName', async (req, res) => {
+    try{
+        const name = req.params.searchedName;
+        const users = await Users.find({ fullName: { $regex: name, $options: 'i' } });
+        const usersData = Promise.all(users.map(async (user) => {
+            return { user: { email: user.email, fullName: user.fullName, receiverId: user._id } }
+        }))
+        console.log("users", usersData);
         res.status(200).json(await usersData);
     } catch (error) {
         console.log('Error', error)
