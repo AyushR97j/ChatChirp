@@ -23,7 +23,7 @@ const Dashboard = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL
   ///////////////////////////////////////////////
   useEffect(() => {
-    setSocket(io("http://localhost:8080"));
+    setSocket(io("https://chatchirp.onrender.com/"));
   }, []);
     //deployed backend base url
 
