@@ -20,7 +20,12 @@ const Messages = require('./models/Messages');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+	cors({
+		origin: "*",
+		credentials: true,
+	})
+);
 
 const port = process.env.PORT || 8000;
 
