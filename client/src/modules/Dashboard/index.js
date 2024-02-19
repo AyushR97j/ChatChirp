@@ -30,7 +30,7 @@ const Dashboard = () => {
   useEffect(() => {
     socket?.emit("addUser", user?.id);
     socket?.on("getUsers", (users) => {
-      console.log("activeUsers :>> ", users);
+      //console.log("activeUsers :>> ", users);
     });
     socket?.on("getMessage", (data) => {
       setMessages((prev) => ({
@@ -63,7 +63,7 @@ const Dashboard = () => {
       setConversations(resData);
     };
     fetchConversations();
-  }, []);
+  }, [message, messages]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -91,6 +91,28 @@ const Dashboard = () => {
     );
     const resData = await res.json();
     setMessages({ messages: resData, receiver, conversationId });
+  };
+
+  const fetchMessagess = async (userId, receiver) => {
+
+    const receiverId = receiver?.receiverId;
+    // console.log(senderId, receiverId)
+    // console.log(conversations)
+
+    let conversationId = null;
+
+    for (const conversation of conversations) {
+      if (conversation.user.receiverId === receiverId) {
+        conversationId = conversation.conversationId;
+      }
+    }
+
+    if(conversationId === null) {
+      //console.log("conv id with clicked user is - " , conversationId)
+      fetchMessages("new", receiver)
+    } else {
+      fetchMessages(conversationId, receiver);
+    }
   };
 
   const sendMessage = async (e) => {
@@ -161,7 +183,7 @@ const Dashboard = () => {
             {conversations.length > 0 ? (
               conversations.map(({ conversationId, user }) => {
                 return (
-                  <div className="flex items-center py-8 border-b border-b-gray-300">
+                  <div key={conversationId} className="flex items-center py-8 border-b border-b-gray-300">
                     <div
                       className="cursor-pointer flex items-center"
                       onClick={() => fetchMessages(conversationId, user)}
@@ -350,14 +372,14 @@ const Dashboard = () => {
             {showSearchedUserList && (
               <UserList
                 users={searchedUserList}
-                fetchMessages={fetchMessages}
+                fetchMessagess={fetchMessagess}
               />
             )}
           </div>
 
           <div>
             <div className="text-primary text-lg">Other People</div>
-            <UserList users={users} fetchMessages={fetchMessages} />
+            <UserList users={users} fetchMessagess={fetchMessagess} />
           </div>
         </>
       </div>

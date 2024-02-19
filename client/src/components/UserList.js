@@ -1,18 +1,18 @@
 import React from 'react'
 import Img1 from "../assets/img1.jpg";
 
-const UserList = ({users, fetchMessages}) => {
+const UserList = ({users, fetchMessagess}) => {
 
-    //console.log("users", users)
+    console.log("users", users)
   return (
     <div>
-      {users.length > 0 ? (
-              users.map(({ userId, user }) => {
+      {users?.length > 0 ? (
+              users?.map(({ userId, user }) => {
                 return (
-                  <div className="flex items-center py-8 border-b border-b-gray-300">
+                  <div key={user.receiverId} className="flex items-center py-8 border-b border-b-gray-300">
                     <div
                       className="cursor-pointer flex items-center"
-                      onClick={() => fetchMessages("new", user)}
+                      onClick={() => fetchMessagess(userId, user)}
                     >
                       <div>
                         <img

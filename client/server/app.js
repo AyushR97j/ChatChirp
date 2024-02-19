@@ -15,6 +15,8 @@ const io = require('socket.io')(server, {
 // Connect DB
 require('./db/connection');
 
+require('dotenv').config();
+
 // Import Files
 const Users = require('./models/Users');
 const Conversations = require('./models/Conversations');
