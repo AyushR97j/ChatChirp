@@ -3,7 +3,7 @@ import Img1 from "../assets/img1.jpg";
 
 const UserList = ({users, fetchMessagess}) => {
 
-    console.log("users", users)
+    //console.log("users", users)
   return (
     <div>
       {users?.length > 0 ? (

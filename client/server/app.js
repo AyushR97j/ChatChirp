@@ -89,11 +89,11 @@ app.post('/api/register', async (req, res, next) => {
         const { fullName, email, password } = req.body;
 
         if (!fullName || !email || !password) {
-            res.status(400).send('Please fill all required fields');
+            return res.status(400).send('Please fill all required fields');
         } else {
             const isAlreadyExist = await Users.findOne({ email });
             if (isAlreadyExist) {
-                res.status(400).send('User already exists');
+                return res.status(400).send('User already exists');
             } else {
                 const newUser = new Users({ fullName, email });
                 bcryptjs.hash(password, 10, (err, hashedPassword) => {
@@ -243,7 +243,7 @@ app.get('/api/user/:searchedName', async (req, res) => {
         const usersData = Promise.all(users.map(async (user) => {
             return { user: { email: user.email, fullName: user.fullName, receiverId: user._id } }
         }))
-        console.log("users", usersData);
+        //console.log("users", usersData);
         res.status(200).json(await usersData);
     } catch (error) {
         console.log('Error', error)

@@ -2,6 +2,7 @@ import { useState } from "react"
 import Button from "../../components/Button"
 import Input from "../../components/Input"
 import { useNavigate } from 'react-router-dom'
+import PopUp from "../../components/PopUp/PopUp"
 
 ///////////////////////////////////////////////
 const BASE_URL = process.env.REACT_APP_BASE_URL
@@ -10,6 +11,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL
 const Form = ({
     isSignInPage = true,
 }) => {
+    const[popupText, setPopupText] = useState("");
+    
     const [data, setData] = useState({
         ...(!isSignInPage && {
             fullName: ''
@@ -20,7 +23,7 @@ const Form = ({
     const navigate = useNavigate()
 
     const handleSubmit = async(e) => {
-        console.log('data :>> ', data);
+        //console.log('data :>> ', data);
         e.preventDefault()
         const res = await fetch(`${BASE_URL}api/${isSignInPage ? 'login' : 'register'}`, {
             method: 'POST',
@@ -30,8 +33,14 @@ const Form = ({
             body: JSON.stringify(data)
         })
 
+        if(res.status === 200 && !isSignInPage) {
+            setPopupText("User Registered Successfully🎉\nPlease Sign In to continue...")
+            navigate('/users/sign_in')
+        }
+
         if(res.status === 400) {
-            alert('Invalid credentials')
+            const resText = await res.text()
+            setPopupText(resText)
         }else{
             const resData = await res.json()
             if(resData.token) {
@@ -41,8 +50,13 @@ const Form = ({
             }
         }
     }
+
   return (
     <div className="bg-light h-screen flex items-center justify-center">
+        {
+            popupText.length > 0 && 
+            <PopUp text={popupText} setPopupText={setPopupText} />
+        }
         <div className=" bg-white w-[600px] h-[800px] shadow-lg rounded-lg flex flex-col justify-center items-center">
             <div className=" text-4xl font-extrabold">Welcome {isSignInPage && 'Back'}</div>
             <div className=" text-xl font-light mb-14">{isSignInPage ? 'Sign in to get explored' : 'Sign up to get started'}</div>
