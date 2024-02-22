@@ -183,9 +183,26 @@ app.post('/api/message', async (req, res) => {
             const newMessage = new Messages({ conversationId: newCoversation._id, senderId, message });
             await newMessage.save();
             return res.status(200).send('Message sent successfully');
-        } else if (!conversationId && !receiverId) {
+        } else if(conversationId !== 'new'){
+            const existingConversation = await Conversations.findById(conversationId);
+
+            if (existingConversation) {
+            // Create a copy of the existing conversation as a plain JavaScript object
+            const copiedConversation = existingConversation.toObject();
+
+            // Delete the original conversation
+            await Conversations.findByIdAndDelete(conversationId);
+
+            // Create a new instance of Conversations with the copied conversation
+            const newConversation = new Conversations(copiedConversation);
+            await newConversation.save();
+            }
+        }  else if (!conversationId && !receiverId) {
             return res.status(400).send('Please fill all required fields')
         }
+        
+        
+        ///////////////////////
         const newMessage = new Messages({ conversationId, senderId, message });
         await newMessage.save();
         res.status(200).send('Message sent successfully');
