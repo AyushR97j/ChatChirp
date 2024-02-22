@@ -179,7 +179,7 @@ const Dashboard = () => {
         <hr />
         <div className="mx-14 mt-10">
           <div className="text-primary text-lg">Messages</div>
-          <div>
+          <div className="flex flex-col-reverse">
             {conversations.length > 0 ? (
               conversations.map(({ conversationId, user }) => {
                 return (
